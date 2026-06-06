@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ordem de Pedido</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <span class="header-label">Sistema de Pedidos</span>
+      <h1>ORDEM DE PEDIDO</h1>
+    </div>
+  </header>
+
+  <main>
+    <form action="/gerar" method="POST" enctype="multipart/form-data" id="form-pedido">
+
+      <!-- ── SEÇÃO 1: DADOS DO PEDIDO ── -->
+      <section class="card">
+        <div class="card-title">
+          <span class="card-num">01</span>
+          Dados do Pedido
+        </div>
+        <div class="grid-3">
+          <div class="field">
+            <label>Nome do Cliente</label>
+            <input type="text" name="nome_cliente" placeholder="Ex: João Silva" required />
+          </div>
+          <div class="field">
+            <label>Data do Atendimento</label>
+            <input type="date" name="data_atend" required />
+          </div>
+          <div class="field">
+            <label>Nome do Vendedor</label>
+            <input type="text" name="nome_vendedor" placeholder="Ex: Maria" required />
+          </div>
+        </div>
+      </section>
+
+      <!-- ── SEÇÃO 2: PRAZOS ── -->
+      <section class="card">
+        <div class="card-title">
+          <span class="card-num">02</span>
+          Prazos e Envio
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Tipo de Envio</label>
+            <input type="text" name="tipo_envio" placeholder="Ex: ENTREGA, RETIRADA" required />
+          </div>
+          <div class="field"></div>
+        </div>
+        <div class="grid-4">
+          <div class="field">
+            <label>Amostra Digital até</label>
+            <input type="date" name="d3uteis" />
+          </div>
+          <div class="field">
+            <label>Amostra Física até</label>
+            <input type="date" name="d5uteis" />
+          </div>
+          <div class="field">
+            <label>Entrega a partir de</label>
+            <input type="date" name="d7uteis" />
+          </div>
+          <div class="field">
+            <label>Entrega até</label>
+            <input type="date" name="d10uteis" />
+          </div>
+        </div>
+      </section>
+
+      <!-- ── SEÇÃO 3: RÓTULOS ── -->
+      <section class="card">
+        <div class="card-title">
+          <span class="card-num">03</span>
+          Rótulos
+        </div>
+
+        <div id="rotulos-container">
+          <!-- Rótulos adicionados dinamicamente pelo script.js -->
+        </div>
+
+        <button type="button" class="btn-add" id="btn-add-rotulo">
+          <span>+</span> Adicionar Rótulo
+        </button>
+      </section>
+
+      <!-- ── SEÇÃO 4: ENDEREÇO ── -->
+      <section class="card">
+        <div class="card-title">
+          <span class="card-num">04</span>
+          Endereço
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label">Recebedor e NF são o mesmo?</span>
+          <div class="toggle-group">
+            <button type="button" class="toggle-btn active" id="btn-mesmo" onclick="toggleEndereco(true)">Sim</button>
+            <button type="button" class="toggle-btn" id="btn-dif" onclick="toggleEndereco(false)">Não</button>
+          </div>
+        </div>
+
+        <input type="hidden" name="mesmo_endereco" id="input-mesmo-endereco" value="sim" />
+
+        <!-- Bloco unificado -->
+        <div id="bloco-unificado">
+          <div class="bloco-end-titulo">Dados do Recebedor / NF</div>
+          <div class="grid-2">
+            <div class="field"><label>Nome</label><input type="text" name="nm_ENF" /></div>
+            <div class="field"><label>CPF ou CNPJ</label><input type="text" name="ID_ENF" /></div>
+            <div class="field"><label>CEP</label><input type="text" name="cep_ENF" /></div>
+            <div class="field"><label>Rua ou Avenida</label><input type="text" name="rua_ENF" /></div>
+            <div class="field"><label>Número</label><input type="text" name="num_end_ENF" /></div>
+            <div class="field"><label>Complemento</label><input type="text" name="comp_ENF" /></div>
+            <div class="field"><label>Bairro</label><input type="text" name="bairro_ENF" /></div>
+            <div class="field"><label>Cidade / Estado</label><input type="text" name="local_ENF" /></div>
+          </div>
+        </div>
+
+        <!-- Blocos separados (ocultos por padrão) -->
+        <div id="bloco-separado" style="display:none;">
+          <div class="bloco-end-titulo">Dados da NF</div>
+          <div class="grid-2">
+            <div class="field"><label>Nome</label><input type="text" name="nm_NF" /></div>
+            <div class="field"><label>CPF ou CNPJ</label><input type="text" name="ID_NF" /></div>
+            <div class="field"><label>CEP</label><input type="text" name="cep_NF" /></div>
+            <div class="field"><label>Rua ou Avenida</label><input type="text" name="rua_NF" /></div>
+            <div class="field"><label>Número</label><input type="text" name="num_end_NF" /></div>
+            <div class="field"><label>Complemento</label><input type="text" name="comp_NF" /></div>
+            <div class="field"><label>Bairro</label><input type="text" name="bairro_NF" /></div>
+            <div class="field"><label>Cidade / Estado</label><input type="text" name="local_NF" /></div>
+          </div>
+
+          <div class="bloco-end-titulo" style="margin-top:24px;">Dados do Recebedor</div>
+          <div class="grid-2">
+            <div class="field"><label>Nome</label><input type="text" name="nm_ENT" /></div>
+            <div class="field"><label>CPF ou CNPJ</label><input type="text" name="ID_ENT" /></div>
+            <div class="field"><label>CEP</label><input type="text" name="cep_ENT" /></div>
+            <div class="field"><label>Rua ou Avenida</label><input type="text" name="rua_ENT" /></div>
+            <div class="field"><label>Número</label><input type="text" name="num_end_ENT" /></div>
+            <div class="field"><label>Complemento</label><input type="text" name="comp_ENT" /></div>
+            <div class="field"><label>Bairro</label><input type="text" name="bairro_ENT" /></div>
+            <div class="field"><label>Cidade / Estado</label><input type="text" name="local_ENT" /></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── BOTÃO GERAR ── -->
+      <div class="gerar-row">
+        <button type="submit" class="btn-gerar">
+          Gerar Ordem de Pedido →
+        </button>
+      </div>
+
+    </form>
+  </main>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
